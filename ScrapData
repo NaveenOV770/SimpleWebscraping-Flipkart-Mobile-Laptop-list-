@@ -1,0 +1,26 @@
+from bs4 import BeautifulSoup as bs
+import pandas as pd
+import csv
+from urllib.request import urlopen
+url = input("Enter your Flipkart's  Mobile/Laptop search Url to scrap: ")
+s = urlopen(url)
+html = s.read()
+s.close()
+soup = bs(html,'html.parser')
+phone_List = []
+price_List = []
+containers = soup.find_all('div',{"class": "_1-2Iqu row"})
+for container in containers:
+    phones = container.find_all('div', {"class": "_3wU53n"})
+    phone = phones[0].text.strip()
+    prices = container.find_all('div', {'class': '_1vC4OE _2rQ-NK'})
+    price = prices[0].text.strip()
+    phone_List.append(phone)
+    price_List.append(price)
+
+df = pd.DataFrame({'PHONES': phone_List, 'PRICES': price_List})
+df.to_csv('Scrapped_Data.csv')
+
+
+
+
